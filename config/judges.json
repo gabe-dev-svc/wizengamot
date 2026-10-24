@@ -1,0 +1,377 @@
+{
+  "$schema": "./judges.schema.json",
+  "judges": [
+    {
+      "id": "operational-excellence",
+      "name": "Operational Excellence",
+      "findingPrefix": "OPS",
+      "prompt": "You are the Operational Excellence judge, applying the operational excellence pillar of the AWS Well-Architected Framework. You care about how this system will be run, observed, changed and improved once it exists: ownership, telemetry, automation, deployment safety, procedures and learning from failure. The framework's examples are AWS-specific, but its principles are not; a design on another platform can still score well.",
+      "rubric": [
+        {
+          "name": "Organize teams around business outcomes",
+          "description": "Ownership, success measures and KPIs tied to the business goal the design serves.",
+          "anchors": {
+            "1": "No owner, goal or success measure is stated.",
+            "5": "A goal and an owner are named, but success isn't measurable or KPIs are missing.",
+            "10": "Clear owner, business outcome and measurable KPIs, with how operational metrics roll up to them."
+          }
+        },
+        {
+          "name": "Implement observability for actionable insights",
+          "description": "Logs, metrics, traces and alerts that tell operators when outcomes are at risk.",
+          "anchors": {
+            "1": "Monitoring and alerting are not mentioned.",
+            "5": "Some logging or metrics are planned, but no alerts, thresholds or business-level signals.",
+            "10": "Specific signals, thresholds and alerts tied to business outcomes, with who responds and how."
+          }
+        },
+        {
+          "name": "Safely automate where possible",
+          "description": "Infrastructure, configuration and operations defined as code, with guardrails.",
+          "anchors": {
+            "1": "Setup and operations are manual or unspecified.",
+            "5": "Some automation is planned, without guardrails such as rate limits, error thresholds or approvals.",
+            "10": "Operations and infrastructure as code, with explicit guardrails and safe defaults."
+          }
+        },
+        {
+          "name": "Make frequent, small, reversible changes",
+          "description": "Incremental rollout, feature flags or staged deploys, and a way back.",
+          "anchors": {
+            "1": "A big-bang launch with no rollout or rollback plan.",
+            "5": "Rollout is phased, but rollback or blast-radius control is unclear.",
+            "10": "Staged, flag-gated rollout with defined rollback triggers and reversible data changes."
+          }
+        },
+        {
+          "name": "Refine operations procedures frequently",
+          "description": "Runbooks or procedures, and how they will be reviewed and kept current.",
+          "anchors": {
+            "1": "No operational procedures are mentioned.",
+            "5": "Key procedures are identified but not written down or owned.",
+            "10": "Runbooks for key procedures, with owners and a review cadence."
+          }
+        },
+        {
+          "name": "Anticipate failure",
+          "description": "Failure scenarios identified up front, with how they will be exercised.",
+          "anchors": {
+            "1": "Failure modes are not considered.",
+            "5": "Main risks are listed, but there's no plan to test responses to them.",
+            "10": "Failure scenarios with impact, mitigations and planned exercises (game days, fault injection)."
+          }
+        },
+        {
+          "name": "Learn from all operational events and metrics",
+          "description": "Post-incident review and feedback from operations back into the design.",
+          "anchors": {
+            "1": "No mechanism for learning from incidents or metrics.",
+            "5": "Incidents will be reviewed, but nothing feeds back into the design or backlog.",
+            "10": "Defined post-incident process and metric reviews that feed changes back into the system."
+          }
+        },
+        {
+          "name": "Use managed services",
+          "description": "Managed services chosen where they reduce operational burden, with the trade-off stated.",
+          "anchors": {
+            "1": "Commodity infrastructure is self-built with no justification.",
+            "5": "Managed services are used, but the build-vs-buy choices aren't explained.",
+            "10": "Each significant component's managed-vs-self-run choice is justified against operational burden."
+          }
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "findingPrefix": "SEC",
+      "prompt": "You are the Security judge, applying the security pillar of the AWS Well-Architected Framework. You care about protecting data, systems and identities: who can do what, how credentials and secrets are handled, how sensitive data is protected, and how the team would detect and respond to an incident. The framework's examples are AWS-specific, but its principles are not; a design on another platform can still score well.",
+      "rubric": [
+        {
+          "name": "Implement a strong identity foundation",
+          "description": "Least privilege, separation of duties, centralized identity, minimal long-term static credentials.",
+          "anchors": {
+            "1": "Broad or unspecified permissions; long-lived shared credentials.",
+            "5": "Scoped permissions are requested, but credential lifetime or separation of duties is unaddressed.",
+            "10": "Least-privilege scopes justified per need, short-lived or revocable credentials, and clear separation of duties."
+          }
+        },
+        {
+          "name": "Maintain traceability",
+          "description": "Audit logging of actions and changes, with alerting.",
+          "anchors": {
+            "1": "No audit trail for sensitive actions.",
+            "5": "Actions are logged, but no alerting, retention or review is defined.",
+            "10": "Security-relevant actions are logged, retained, alerted on and attributable to an identity."
+          }
+        },
+        {
+          "name": "Apply security at all layers",
+          "description": "Defense in depth across edge, network, compute, application and code.",
+          "anchors": {
+            "1": "Security relies on a single control, or isn't discussed.",
+            "5": "Controls exist at some layers, with obvious gaps (e.g. unauthenticated inbound endpoints).",
+            "10": "Layered controls at each tier, with each inbound path's authentication stated."
+          }
+        },
+        {
+          "name": "Automate security best practices",
+          "description": "Security controls defined as code and enforced automatically.",
+          "anchors": {
+            "1": "Security depends on people remembering to do the right thing.",
+            "5": "Some controls are automated; others rely on convention.",
+            "10": "Controls enforced in code, configuration or CI, with no manual steps on the critical path."
+          }
+        },
+        {
+          "name": "Protect data in transit and at rest",
+          "description": "Data classified by sensitivity; encryption, tokenization, access control and key management.",
+          "anchors": {
+            "1": "Sensitive data is stored or sent unprotected, or isn't identified.",
+            "5": "Encryption is used, but data isn't classified or key management and rotation are unspecified.",
+            "10": "Sensitive data is identified and classified, encrypted in transit and at rest, with key ownership and rotation defined."
+          }
+        },
+        {
+          "name": "Keep people away from data",
+          "description": "Mechanisms that remove the need for direct human access to sensitive data.",
+          "anchors": {
+            "1": "Routine operations require people to read or handle secrets or customer data.",
+            "5": "Direct access is limited but still needed for some routine tasks.",
+            "10": "Tooling and automation mean no routine task needs human access to sensitive data."
+          }
+        },
+        {
+          "name": "Prepare for security events",
+          "description": "Incident response, credential revocation and rotation, detection and recovery.",
+          "anchors": {
+            "1": "No plan for a breach, leaked credential or revoked access.",
+            "5": "Revocation or rotation is mentioned, without a response procedure.",
+            "10": "Defined response for credential leaks and revocations, with detection, containment and customer communication."
+          }
+        }
+      ]
+    },
+    {
+      "id": "reliability",
+      "name": "Reliability",
+      "findingPrefix": "REL",
+      "prompt": "You are the Reliability judge, applying the reliability pillar of the AWS Well-Architected Framework. You care about whether the system does the right thing consistently and recovers from failure: dependencies, retries, idempotency, limits and quotas, single points of failure, and how changes are applied. The framework's examples are AWS-specific, but its principles are not; a design on another platform can still score well.",
+      "rubric": [
+        {
+          "name": "Automatically recover from failure",
+          "description": "Health signals that trigger automated recovery; retries with backoff; idempotent operations.",
+          "anchors": {
+            "1": "Failures of dependencies aren't handled.",
+            "5": "Retries or error handling exist, but not idempotency or business-level health signals.",
+            "10": "Each external dependency's failure modes are handled with backoff, idempotency and automatic recovery."
+          }
+        },
+        {
+          "name": "Test recovery procedures",
+          "description": "How failure and recovery paths will be tested before production.",
+          "anchors": {
+            "1": "Only happy paths are tested.",
+            "5": "Some failure cases are tested in unit tests only.",
+            "10": "Failure and recovery paths are tested end to end, including dependency outages."
+          }
+        },
+        {
+          "name": "Scale horizontally to increase aggregate workload availability",
+          "description": "No single points of failure; work spread across independent units.",
+          "anchors": {
+            "1": "One component or process failing stops everything.",
+            "5": "Some redundancy, but at least one unacknowledged single point of failure.",
+            "10": "Work is partitioned so one failure affects only its slice, and each single point of failure is stated and accepted."
+          }
+        },
+        {
+          "name": "Stop guessing capacity",
+          "description": "Demand, quotas and rate limits understood; capacity driven by measurement.",
+          "anchors": {
+            "1": "External rate limits and quotas are ignored.",
+            "5": "Limits are known, but there's no plan for approaching or exceeding them.",
+            "10": "Limits are quantified against expected load, with throttling, headroom and monitoring."
+          }
+        },
+        {
+          "name": "Manage change through automation",
+          "description": "Infrastructure, schema and config changes applied through tracked automation.",
+          "anchors": {
+            "1": "Changes are applied by hand.",
+            "5": "Code changes are automated; schema or config changes are not.",
+            "10": "All changes, including migrations and config, are versioned, reviewed and applied automatically."
+          }
+        }
+      ]
+    },
+    {
+      "id": "performance-efficiency",
+      "name": "Performance Efficiency",
+      "findingPrefix": "PERF",
+      "prompt": "You are the Performance Efficiency judge, applying the performance efficiency pillar of the AWS Well-Architected Framework. You care about whether the design uses resources efficiently to meet its requirements: technology choices matched to the workload, latency, throughput, and whether performance assumptions will be validated. The framework's examples are AWS-specific, but its principles are not; a design on another platform can still score well.",
+      "rubric": [
+        {
+          "name": "Democratize advanced technologies",
+          "description": "Complex capabilities consumed as services instead of built in-house where sensible.",
+          "anchors": {
+            "1": "Complex capabilities are hand-built with no justification.",
+            "5": "Services are used for some capabilities; others are built without comparison.",
+            "10": "Build-vs-consume decisions for complex capabilities are explicit and justified."
+          }
+        },
+        {
+          "name": "Go global in minutes",
+          "description": "Latency, regional and data-residency needs considered.",
+          "anchors": {
+            "1": "Geography and latency are ignored where they matter.",
+            "5": "Region is chosen, but latency or residency requirements aren't examined.",
+            "10": "Regional, latency and residency needs are stated, and the deployment footprint follows from them."
+          }
+        },
+        {
+          "name": "Use serverless architectures",
+          "description": "Serverless or managed compute considered for the workload shape.",
+          "anchors": {
+            "1": "Compute choice is unexplained and mismatched to the workload.",
+            "5": "Compute choice is reasonable but not compared with alternatives.",
+            "10": "Compute model is chosen deliberately for the workload's shape (bursty, scheduled, long-running), with trade-offs."
+          }
+        },
+        {
+          "name": "Experiment more often",
+          "description": "Spikes, benchmarks or experiments planned to validate performance assumptions.",
+          "anchors": {
+            "1": "Performance assumptions are untested.",
+            "5": "A spike is mentioned without success criteria.",
+            "10": "Key assumptions have planned experiments with measurable success criteria and a decision point."
+          }
+        },
+        {
+          "name": "Consider mechanical sympathy",
+          "description": "Technology choices matched to access patterns, data shape and load.",
+          "anchors": {
+            "1": "Data stores and APIs are used against their grain (e.g. chatty calls, full rewrites).",
+            "5": "Choices fit the main access pattern, with inefficiencies in secondary paths.",
+            "10": "Storage, APIs and update patterns match the access patterns and load profile, with numbers."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cost-optimization",
+      "name": "Cost Optimization",
+      "findingPrefix": "COST",
+      "prompt": "You are the Cost Optimization judge, applying the cost optimization pillar of the AWS Well-Architected Framework. You care about delivering the business value at the lowest reasonable cost: who owns the cost, what drives it, how it scales with usage, and whether it can be measured and attributed. Include engineering and third-party costs, not just infrastructure. The framework's examples are AWS-specific, but its principles are not; a design on another platform can still score well.",
+      "rubric": [
+        {
+          "name": "Implement Cloud Financial Management",
+          "description": "Cost ownership and a budget or cost expectation for the proposal.",
+          "anchors": {
+            "1": "Cost isn't mentioned.",
+            "5": "Costs are noted qualitatively, with no owner or estimate.",
+            "10": "Cost owner, estimate and budget guardrails are stated."
+          }
+        },
+        {
+          "name": "Adopt a consumption model",
+          "description": "Pay-for-use choices; resources scaled or stopped with demand.",
+          "anchors": {
+            "1": "Fixed capacity is provisioned for peak with no justification.",
+            "5": "Usage-based pieces exist, but some always-on resources go unexamined.",
+            "10": "Spend scales with demand, and idle capacity is identified and minimized."
+          }
+        },
+        {
+          "name": "Measure overall efficiency",
+          "description": "Cost per unit of business output.",
+          "anchors": {
+            "1": "No link between cost and business output.",
+            "5": "A business output is defined, but cost isn't measured against it.",
+            "10": "A unit cost (per customer, request or campaign) is defined and tracked."
+          }
+        },
+        {
+          "name": "Stop spending money on undifferentiated heavy lifting",
+          "description": "Build-vs-buy considered; no reinventing commodity infrastructure.",
+          "anchors": {
+            "1": "Commodity capabilities are custom-built.",
+            "5": "Mostly sensible, with some custom work that a product or service could replace.",
+            "10": "Engineering effort goes only to differentiating work, and the build-vs-buy reasoning is documented."
+          }
+        },
+        {
+          "name": "Analyze and attribute expenditure",
+          "description": "How costs will be tracked and attributed.",
+          "anchors": {
+            "1": "Costs can't be attributed to this feature or its customers.",
+            "5": "Costs are visible in aggregate only.",
+            "10": "Costs are tagged or metered per feature and customer, with a dashboard or report."
+          }
+        }
+      ]
+    },
+    {
+      "id": "sustainability",
+      "name": "Sustainability",
+      "findingPrefix": "SUS",
+      "prompt": "You are the Sustainability judge, applying the sustainability pillar of the AWS Well-Architected Framework. You care about the resources the workload consumes per unit of useful work, and the load it places on others: idle capacity, wasted computation and polling, data retention, and the impact on downstream services and partners. The framework's examples are AWS-specific, but its principles are not; a design on another platform can still score well.",
+      "rubric": [
+        {
+          "name": "Understand your impact",
+          "description": "Awareness of the resources the workload consumes per unit of work.",
+          "anchors": {
+            "1": "Resource consumption isn't considered.",
+            "5": "Main resource drivers are identified, but not quantified.",
+            "10": "Resource use per unit of work is estimated, with the main drivers named."
+          }
+        },
+        {
+          "name": "Establish sustainability goals",
+          "description": "Goals for resource intensity as the workload grows.",
+          "anchors": {
+            "1": "No efficiency goal of any kind.",
+            "5": "Efficiency is a stated aim without a measure.",
+            "10": "A measurable efficiency goal (per user or per transaction) that holds as the workload grows."
+          }
+        },
+        {
+          "name": "Maximize utilization",
+          "description": "Right-sizing; avoiding idle resources, polling and wasted work.",
+          "anchors": {
+            "1": "Frequent polling or recomputation of unchanged data with no justification.",
+            "5": "Some waste is avoided (e.g. change thresholds); other recurring work runs regardless of need.",
+            "10": "Work happens only when needed (events, thresholds, batching), and resources are right-sized."
+          }
+        },
+        {
+          "name": "Anticipate and adopt new, more efficient hardware and software offerings",
+          "description": "Flexibility to adopt more efficient offerings later.",
+          "anchors": {
+            "1": "Hard dependencies make upgrades costly.",
+            "5": "Versions are pinned, without an upgrade path.",
+            "10": "Dependencies are pinned with an upgrade process, so more efficient versions can be adopted easily."
+          }
+        },
+        {
+          "name": "Use managed services",
+          "description": "Shared managed services preferred where they raise utilization.",
+          "anchors": {
+            "1": "Dedicated, mostly idle infrastructure where shared services would do.",
+            "5": "Managed services are used, but some dedicated resources go unexamined.",
+            "10": "Shared or managed services are used wherever they improve utilization, with exceptions justified."
+          }
+        },
+        {
+          "name": "Reduce the downstream impact of your cloud workloads",
+          "description": "Load the design places on customers, partners and downstream APIs.",
+          "anchors": {
+            "1": "The design generates unnecessary load on third-party APIs or customer devices.",
+            "5": "Downstream load is acknowledged but not minimized.",
+            "10": "Calls to downstream systems are minimized and bounded, and their impact is measured."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "title": "Design review judges",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "judges": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "description": "Unique judge ID; used for the graph node ID and on the command line (--only)."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Display name, e.g. \"Security\"."
+          },
+          "findingPrefix": {
+            "description": "Prefix for this judge's finding IDs, e.g. \"SEC\" gives SEC-1, SEC-2. Defaults to the uppercased ID.",
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9]*$"
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The judge's own instructions: role, focus and anything specific to this area. The harness appends the rubric, scoring rules and output format."
+          },
+          "rubric": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Short name of what is graded, e.g. \"Protect data in transit and at rest\"."
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "What this criterion measures in a design document."
+                },
+                "anchors": {
+                  "type": "object",
+                  "properties": {
+                    "1": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "What a document scoring 1 looks like for this criterion."
+                    },
+                    "5": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "What a document scoring 5 looks like."
+                    },
+                    "10": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "What a document scoring 10 looks like."
+                    }
+                  },
+                  "required": [
+                    "1",
+                    "5",
+                    "10"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Required anchor descriptions for grades 1, 5 and 10. Judges interpolate the grades in between."
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "anchors"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Criteria this judge grades, each 1-10."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "prompt",
+          "rubric"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "judges"
+  ],
+  "additionalProperties": false
+}
